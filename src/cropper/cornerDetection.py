@@ -1,11 +1,10 @@
-from cropper.segmentation import binarize
-from skimage import io
 from skimage.morphology import disk, binary_erosion
-from matplotlib import pyplot as plt
-from os import walk
-from tqdm import tqdm
+from cropper.segmentation import binarize
 import numpy as np
 import math
+
+from matplotlib import pyplot as plt
+from skimage import io
 
 
 def get_edges(mask: np.ndarray) -> np.ndarray:
@@ -42,6 +41,9 @@ def is_corner(i: int, j: int, mask: np.ndarray, size=50) -> bool:
         binary array (segmentation mask) obtained after binarization
     @param: size
         size of the environment to check
+
+    @returns:
+        True if given pixel is probable to be corner
     '''
     
     environment = mask[(i-size):(i+(size+1)), (j-size):(j+(size+1))]
@@ -103,13 +105,16 @@ def choose_corners(points: np.ndarray, h: int, w: int) -> np.ndarray:
     return np.array(corners)
 
 
-def detect_corners(mask: np.ndarray, pad_width=50) -> np.ndarray:
+def detect_corners(mask: np.ndarray, pad_width: int=50) -> np.ndarray:
     '''
     Detects corners of the document on given segmentation mask
 
     @param: mask
         binary array - segmentation mask obtained
         after applying binarize() method
+
+    @param: pad_width
+        width of the applied padding    
 
     @returns
         list of 4 corners coordinates
@@ -144,39 +149,27 @@ def detect_corners(mask: np.ndarray, pad_width=50) -> np.ndarray:
 
 
 if __name__ == '__main__':
-    # directory = './example_images/'
-    directory = './images/'
-    files = []
-    for (dirpath, dirnames, filenames) in walk(directory):
-        files.extend(filenames)
-        files.sort()
-        break
+    image = io.imread('./docs/example.jpg')
+    mask = binarize(image)
+    edges = get_edges(mask)
+    corners = detect_corners(mask)
 
+    fig, axes = plt.subplots(1, 3, figsize=(20, 10))
+    plt.gray()
+    axes[0].imshow(image)
+    axes[0].set_title('Original')
 
-    for filename in tqdm(files[2:3]):
-        image = io.imread(directory + filename)
-        mask = binarize(image)
-        edges = get_edges(mask)
-        corners = detect_corners(mask)
+    axes[1].imshow(mask)
+    axes[1].set_title('Mask')
+            
+    axes[2].imshow(edges)
+    axes[2].set_title('Edges')
 
-        fig, axes = plt.subplots(1, 3, figsize=(20, 10))
-        plt.gray()
-        axes[0].imshow(image)
-        axes[0].set_title('Original')
+    for x, y in corners:
+        axes[2].scatter(x, y, s=150, color='r')
 
-        axes[1].imshow(mask)
-        axes[1].set_title('Mask')
-                
-        axes[2].imshow(edges)
-        axes[2].set_title('Edges')
+    for a in axes.ravel():
+        a.axis('off')
 
-        for x, y in corners:
-            axes[2].scatter(x, y, s=150, color='r')
-
-        for a in axes.ravel():
-            a.axis('off')
-
-        plt.show()
-        # plt.savefig('./crop_res/' + filename)
-
-        plt.close(fig)
+    plt.show()
+    plt.close(fig)

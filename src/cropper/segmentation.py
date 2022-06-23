@@ -1,15 +1,13 @@
-from skimage import color, measure
-from skimage.filters import threshold_local, gaussian, rank
+from skimage.filters import threshold_local, gaussian, rank, threshold_minimum
 from skimage.morphology import disk, binary_closing
+from skimage import color, measure
 from skimage.util import img_as_ubyte
 from scipy.ndimage import binary_fill_holes
 from scipy.fftpack import dct, idct
 import numpy as np
-from skimage.filters import threshold_minimum
 
-from skimage import io
 from matplotlib import pyplot as plt
-from os import walk
+from skimage import io
 
 
 def rgb_to_bgr(img: np.ndarray) -> np.ndarray:
@@ -20,7 +18,6 @@ def rgb_to_bgr(img: np.ndarray) -> np.ndarray:
     frequencies = dct(dct(gray, axis=0), axis=1)
     frequencies[:2,:2] = 0
     gray = idct(idct(frequencies, axis=1), axis=0)
-    # Renormalize to range [0:1]
     gray = (gray - gray.min()) / (gray.max() - gray.min())
 
     return gray
@@ -154,13 +151,12 @@ def minimum_binarization(gray: np.ndarray) -> np.ndarray:
 def binarize(img: np.ndarray) -> np.ndarray:
     '''
     Binarizes given image
-    Applies all the methods above to get binarization
 
     @param: img
         given rgb image
 
     @returns
-        binary array (mask)
+        binary array (segmentation mask)
     '''    
     gray = preprocess(img)
     # Otsu binarization showed the best results on tests
@@ -173,47 +169,36 @@ def binarize(img: np.ndarray) -> np.ndarray:
 
 
 if __name__ == '__main__':
-    directory = './example_images/'
-    files = []
-    for (dirpath, dirnames, filenames) in walk(directory):
-        files.extend(filenames)
-        files.sort()
-        break
+    image = io.imread('./docs/example.jpg')
+    gray = rgb_to_bgr(image)
+    gauss = preprocess(image)
+    otsu = otsu_binarization(gauss)
+    receipt = get_biggest_region(otsu)
+    mask = apply_binary_closing(receipt)
 
+    fig, axes = plt.subplots(1, 6, figsize=(20, 6))
+    plt.gray()
 
-    for filename in files[2:3]:
-        image = io.imread(directory + filename)
-        gray = rgb_to_bgr(image)
-        gauss = preprocess(image)
-        otsu = otsu_binarization(gauss)
-        receipt = get_biggest_region(otsu)
-        mask = apply_binary_closing(receipt)
-
-        fig, axes = plt.subplots(1, 6, figsize=(20, 10))
-        plt.gray()
-
-        axes[0].imshow(image)
-        axes[0].set_title('Original')
+    axes[0].imshow(image)
+    axes[0].set_title('Original')
         
-        axes[1].imshow(gray)
-        axes[1].set_title('Gray')
+    axes[1].imshow(gray)
+    axes[1].set_title('Gray')
 
-        axes[2].imshow(gauss)
-        axes[2].set_title('Gauss filter')
+    axes[2].imshow(gauss)
+    axes[2].set_title('Gauss filter')
 
-        axes[3].imshow(otsu)
-        axes[3].set_title('Otsu Thresholding')
+    axes[3].imshow(otsu)
+    axes[3].set_title('Otsu Thresholding')
 
-        axes[4].imshow(receipt)
-        axes[4].set_title('Extracted receipt')
+    axes[4].imshow(receipt)
+    axes[4].set_title('Extracted receipt')
 
-        axes[5].imshow(mask)
-        axes[5].set_title('Final mask')
+    axes[5].imshow(mask)
+    axes[5].set_title('Final mask')
 
-        for a in axes.ravel():
-            a.axis('off')
-
-        plt.show()
-        # plt.savefig('./results/' + filename)
-
-        plt.close(fig)
+    for a in axes.ravel():
+        a.axis('off')
+    
+    plt.show()
+    plt.close(fig)
