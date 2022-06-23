@@ -1,3 +1,4 @@
+from hmac import new
 from skimage.transform import ProjectiveTransform, warp
 from scipy.spatial import distance
 from cropper.cornerDetection import detect_corners
@@ -8,10 +9,12 @@ from skimage import io
 from matplotlib import pyplot as plt
 
 
-def crop_image(image: np.ndarray) -> np.ndarray:
+def crop_image(filename: str=None, new_filename: str=None, image: np.ndarray=None) -> np.ndarray:
     '''
-    Cropes document from given rgb image
+    Cropes document from given image
     '''
+    if filename is not None:
+        image = io.imread(filename)
     mask = binarize(image)
     corners = detect_corners(mask)
 
@@ -24,6 +27,8 @@ def crop_image(image: np.ndarray) -> np.ndarray:
 
     cropped = warp(image, tr, output_shape=(h, w), order=1, mode="reflect")
 
+    if new_filename is not None:
+        io.imsave(new_filename, cropped)
     return cropped
 
 

@@ -1,10 +1,11 @@
 from cropper import cornerDetection, imageCropper, segmentation
+from matplotlib import pyplot as plt
+from skimage import io
 import numpy as np
 
-from matplotlib import pyplot as plt
 
-
-def crop_image_pipeline(image: np.ndarray, final_name: str):
+def crop_image_pipeline(filename: str, final_name: str):
+    image = io.imread(filename)
     gray = segmentation.rgb_to_bgr(image)
     gauss = segmentation.preprocess(image)
     otsu = segmentation.otsu_binarization(gauss)
@@ -16,7 +17,7 @@ def crop_image_pipeline(image: np.ndarray, final_name: str):
     edges = cornerDetection.get_edges(p_mask)
     corners = cornerDetection.detect_corners(mask)
 
-    cropped = imageCropper.crop_image(image)
+    cropped = imageCropper.crop_image(image=image)
 
     fig, axes = plt.subplots(2, 5, figsize=(20, 10))
     axes = axes.ravel()

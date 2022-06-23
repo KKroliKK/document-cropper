@@ -1,13 +1,7 @@
-from cropper.imageCropper import crop_image
-from cropper.cropperPipeline import crop_image_pipeline
+from cropper import crop_image
+from cropper import crop_image_pipeline
 from skimage import io
-import warnings
 
-warnings.filterwarnings("ignore")
 
-image = io.imread('./docs/example.jpg')
-
-cropped = crop_image(image)
-io.imsave('./docs/example_cropped.jpg', cropped)
-
-crop_image_pipeline(image, './docs/example_pipeline.jpg')
+crop_image('./docs/example.jpg', './docs/example_cropped.jpg')
+crop_image_pipeline('./docs/example.jpg', './docs/example_pipeline.jpg')
