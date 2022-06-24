@@ -37,7 +37,7 @@ def preprocess(img: np.ndarray) -> np.ndarray:
 def get_biggest_region(mask: np.ndarray) -> np.ndarray:
     '''
     Finds the biggest connected white region and lives only it.
-    This group will be mask of the document
+    This group will be initial mask of the document
 
     @param: mask
         mask (binary array) obtained after binarization of original image
@@ -45,9 +45,7 @@ def get_biggest_region(mask: np.ndarray) -> np.ndarray:
     @returns
         mask without (hopefuly) without white noise from background
     '''
-    # Creates array where each connected white area has it's own number
     mask = measure.label(mask)
-    # Leaves only the biggest white group, this group is our receipt
     mask = (mask == 1 + np.argmax([r.filled_area for r in measure.regionprops(mask)]))
 
     return mask
@@ -68,8 +66,6 @@ def apply_binary_closing(mask: np.ndarray, size_1: int=10, size_2: int=5) -> np.
     @returns
         final binarization mask
     '''
-    # Two different methods for binary holes closing
-    # They work well as tandem when they are applied in this order
     mask = binary_closing(mask, footprint=disk(size_1, bool))
     mask = binary_fill_holes(mask, structure=disk(size_2, bool))
 
@@ -160,6 +156,7 @@ def binarize(img: np.ndarray) -> np.ndarray:
     '''    
     gray = preprocess(img)
     # Otsu binarization showed the best results on tests
+    # You can try another thesholding functions here
     mask = otsu_binarization(gray)
     mask = post_processing(mask)
 
