@@ -168,7 +168,8 @@ def binarize(img: np.ndarray) -> np.ndarray:
 
 
 
-if __name__ == '__main__':
+def demonstration():
+    '''Demonstrates work of methods from segmentation.py file'''
     image = io.imread('./docs/example.jpg')
     gray = rgb_to_bgr(image)
     gauss = preprocess(image)
@@ -177,6 +178,7 @@ if __name__ == '__main__':
     mask = apply_binary_closing(receipt)
 
     fig, axes = plt.subplots(1, 6, figsize=(20, 6))
+    fig.canvas.manager.set_window_title('Segmentation') 
     plt.gray()
 
     axes[0].imshow(image)

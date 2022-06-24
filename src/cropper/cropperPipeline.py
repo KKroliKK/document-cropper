@@ -29,6 +29,7 @@ def crop_image_pipeline(filename: str, new_filename: str=None):
     cropped = imageCropper.crop_image(image=image)
 
     fig, axes = plt.subplots(2, 5, figsize=(20, 10))
+    fig.canvas.manager.set_window_title('Whole Pipeline')
     axes = axes.ravel()
     plt.gray()
 
@@ -74,3 +75,8 @@ def crop_image_pipeline(filename: str, new_filename: str=None):
         plt.savefig(new_filename)
 
     plt.close(fig)
+
+
+def demonstration():
+    '''Demonstrates work of pipeline'''
+    crop_image_pipeline('./docs/example.jpg')

@@ -47,13 +47,15 @@ def crop_image(filename: str=None, new_filename: str=None, image: np.ndarray=Non
 
 
 
-if __name__ == '__main__':
+def demonstration():
+    '''Demonstrates work of cropping method from imageCropper.py file'''
     image = io.imread('./docs/example.jpg')
     mask = binarize(image)
     corners = detect_corners(mask)
     cropped = crop_image(image=image)
 
     fig, axes = plt.subplots(1, 3, figsize=(20, 10))
+    fig.canvas.manager.set_window_title('Image Cropping')
     plt.gray()
     axes[0].imshow(image)
     axes[0].set_title('Original')

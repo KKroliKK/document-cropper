@@ -149,13 +149,15 @@ def detect_corners(mask: np.ndarray, pad_width: int=50) -> np.ndarray:
 
 
 
-if __name__ == '__main__':
+def demonstration():
+    '''Demonstrates work of methods from cornerDetection.py file'''
     image = io.imread('./docs/example.jpg')
     mask = binarize(image)
     edges = get_edges(mask)
     corners = detect_corners(mask)
 
     fig, axes = plt.subplots(1, 3, figsize=(20, 10))
+    fig.canvas.manager.set_window_title('Corner Detection') 
     plt.gray()
     axes[0].imshow(image)
     axes[0].set_title('Original')
