@@ -7,17 +7,18 @@ from matplotlib import pyplot as plt
 from skimage import io
 
 
-def get_edges(mask: np.ndarray) -> np.ndarray:
+def get_edges(mask: np.ndarray, edge_width: int=1) -> np.ndarray:
     '''
     Extracts edges with a width of one pixel from binary mask
 
     @param: mask
        binary array obtand after binarization of image
+    @param: edge_width
 
     @returns
         binary arry with edges
     '''
-    edges = mask ^ binary_erosion(mask, footprint=disk(1, bool))
+    edges = mask ^ binary_erosion(mask, footprint=disk(edge_width, bool))
     return edges
 
 

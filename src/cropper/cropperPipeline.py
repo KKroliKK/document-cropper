@@ -1,10 +1,19 @@
-from cropper import cornerDetection, imageCropper, segmentation
+from cropper import segmentation, cornerDetection, imageCropper
 from matplotlib import pyplot as plt
 from skimage import io
 import numpy as np
 
 
-def crop_image_pipeline(filename: str, final_name: str):
+def crop_image_pipeline(filename: str, new_filename: str=None):
+    '''
+    Cropes document from given image and shows all the processing stages
+
+    @param: filename
+        path to the image to crop;
+    @param: new_filename
+        if is not None saves cropped file in specified directory;
+        else shows the result with plt.show() method
+    '''
     image = io.imread(filename)
     gray = segmentation.rgb_to_bgr(image)
     gauss = segmentation.preprocess(image)
@@ -14,7 +23,7 @@ def crop_image_pipeline(filename: str, final_name: str):
 
     p_mask = np.pad(mask, pad_width=50, constant_values=False)
 
-    edges = cornerDetection.get_edges(p_mask)
+    edges = cornerDetection.get_edges(p_mask, edge_width=6)
     corners = cornerDetection.detect_corners(mask)
 
     cropped = imageCropper.crop_image(image=image)
@@ -59,5 +68,9 @@ def crop_image_pipeline(filename: str, final_name: str):
     for a in axes:
         a.axis('off')
 
-    plt.savefig(final_name)
+    if new_filename is None:
+        plt.show()
+    else:
+        plt.savefig(new_filename)
+
     plt.close(fig)

@@ -1,6 +1,6 @@
-from hmac import new
 from skimage.transform import ProjectiveTransform, warp
 from scipy.spatial import distance
+from skimage.util import img_as_ubyte
 from cropper.cornerDetection import detect_corners
 from cropper.segmentation import binarize
 import numpy as np
@@ -12,6 +12,17 @@ from matplotlib import pyplot as plt
 def crop_image(filename: str=None, new_filename: str=None, image: np.ndarray=None) -> np.ndarray:
     '''
     Cropes document from given image
+
+    @param: filename
+        path to the image to crop;
+        if value is None method expects to have not None image parameter
+    @param: new_filename
+        if is not None saves cropped file in specified directory
+    @param: image
+        imgae to crop in form of np.ndarray
+    
+    @returns
+        cropped image in form of ndarray
     '''
     if filename is not None:
         image = io.imread(filename)
@@ -27,6 +38,8 @@ def crop_image(filename: str=None, new_filename: str=None, image: np.ndarray=Non
 
     cropped = warp(image, tr, output_shape=(h, w), order=1, mode="reflect")
 
+    cropped = img_as_ubyte(cropped)
+
     if new_filename is not None:
         io.imsave(new_filename, cropped)
     return cropped
@@ -38,7 +51,7 @@ if __name__ == '__main__':
     image = io.imread('./docs/example.jpg')
     mask = binarize(image)
     corners = detect_corners(mask)
-    cropped = crop_image(image)
+    cropped = crop_image(image=image)
 
     fig, axes = plt.subplots(1, 3, figsize=(20, 10))
     plt.gray()
