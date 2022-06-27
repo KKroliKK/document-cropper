@@ -4,7 +4,7 @@
 <br />
 <div align="center">
   <a>
-    <img src="docs/scissors.png" alt="Logo" width="80" height="80">
+    <img src="docs/readme/scissors.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Document-Cropper</h3>
@@ -46,7 +46,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![image info](docs/example_pipeline.jpg)
+![](docs/example_pipeline.jpg)
 
 
 There are a several articles and GitHub repos dedicated to document segmentation; however, I didn't find one that worked right out of the box, so I created this one. It can be used for preprocessing document images for further text recognition on them or for saving them in proper format.
@@ -121,10 +121,29 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ALGORITHM DESCRIPTION -->
 ## Algorithm Description
 
-This implementation was based on [this Inovex article](https://www.inovex.de/de/blog/digitize-receipts-computer-vision/?utm_source=yafavorites). Code from the article didn't work out of the box, so I have reworked part of the code and implemented my own corner detection algorithm.
+This implementation was based on [this Inovex article](https://www.inovex.de/de/blog/digitize-receipts-computer-vision/?utm_source=yafavorites). Code from the article didn't work out of the box, so I have reworked part of the code and implemented my own corner detection algorithm.<br><br>
+The algorithm consists of several steps: 
+1 preprocessing; 2) corner detection; 3) cropping.<br>
+I chose the most optimal methods and their hyperparameters testing each on a dataset of 200 photos.<br>
 
-To crop document from the image 
+1. **Convert initial RGB image into monochrome one.**<br>
+Usually documents are white and stand out strongly in the photo so we can use contrast filters for our needs. Such filters work well with monochrome images.<br>
+![](docs/readme/12.png)
 
+1. **Apply Gaus filter**<br>
+Gauss filter blurs the image thereby removing some artifacts. Tests showed that we can get better segmentation results using this filter.<br>
+![](docs/readme/23.png)
+
+1. **Thresholding**<br>
+At this step I apply thresholding as first binarization step. Usage of the thresholding method was missed in the [article](https://www.inovex.de/de/blog/digitize-receipts-computer-vision/?utm_source=yafavorites) so I tested all the thresholding methods available in skimage and chose the best one. It turned out to be Otsu thersholding with disc size of 8 pixels.<br>
+![](docs/readme/34.png)
+
+1. **Document selection**<br>
+After Otsu thresholding we get picture with different white zones. One of such zones is our document. At this step I am trying leave only document white zone. There is method in [skimage](https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.label) which can cluster pixels from disjoit white zones. The biggest cluster is our document so I leave only it and remove all other regions.<br>
+![](docs/readme/45.png)<br>
+This part of the algorithm should be improved. There are two cases when extracting works incorrect. The first one is when some of background white regions is connected to the documnet's region. The second one is when some of the background regions is bigger than document. There are examples for theese problems below:<br>
+![](docs/readme/problem1.png) <br> ![](docs/readme/problem2.png) <br>
+These issues should be handled somehow in the future.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
