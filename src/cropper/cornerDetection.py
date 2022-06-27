@@ -1,3 +1,4 @@
+from typing import List
 from skimage.morphology import disk, binary_erosion
 from cropper.segmentation import binarize
 import numpy as np
@@ -8,23 +9,21 @@ from skimage import io
 
 
 def get_edges(mask: np.ndarray, edge_width: int=1) -> np.ndarray:
-    '''
-    Extracts edges with a width of one pixel from binary mask
+    '''Extracts edges with a width of one pixel from binary mask
 
-    @param: mask
-       binary array obtand after binarization of image
-    @param: edge_width
+    Args:
+        mask: binary array obtand after binarization of image
+        edge_width: width of the obtained edge in pixels
 
-    @returns
-        binary arry with edges
+    Returns:
+        binary mask with edges
     '''
     edges = mask ^ binary_erosion(mask, footprint=disk(edge_width, bool))
     return edges
 
 
 def is_corner(i: int, j: int, mask: np.ndarray, size=50) -> bool:
-    '''
-    Determines whether a given pixel can be a corner pixel
+    '''Determines whether a given pixel can be a corner pixel
 
         We are working with mask which is binary array. All the input pixels are
     the border piexels of segmentation. These pixels belong to the sides of 
@@ -34,17 +33,14 @@ def is_corner(i: int, j: int, mask: np.ndarray, size=50) -> bool:
     than 40%. If this percent is less then this pixel is more probable to be a corner
     pixel
 
-    @param: i
-        y-coordinate of given pixel
-    @param: j
-        x-coordinate of given pixel
-    @param: mask
-        binary array (segmentation mask) obtained after binarization
-    @param: size
-        size of the environment to check
+    Args:
+        i: y-coordinate of given pixel
+        j: x-coordinate of given pixel
+        mask: binary array (segmentation mask) obtained after binarization
+        size: size of the environment to check
 
-    @returns:
-        True if given pixel is probable to be corner
+    Returns:
+        `True` if given pixel is probable to be corner, `False` otherwise
     '''
     
     environment = mask[(i-size):(i+(size+1)), (j-size):(j+(size+1))]
@@ -57,8 +53,7 @@ def is_corner(i: int, j: int, mask: np.ndarray, size=50) -> bool:
 
 
 def choose_corners(points: np.ndarray, h: int, w: int) -> np.ndarray:
-    '''
-    Extracts 4 pixels from "corners" list as corners of the document.
+    '''Extracts 4 pixels from "corners" list as corners of the document.
     Pixels are arranged in special order:
         1) upper left
         2) upper right
@@ -66,25 +61,24 @@ def choose_corners(points: np.ndarray, h: int, w: int) -> np.ndarray:
         4) lower left
     This order is needed for following cropping transformation
 
-    @param: corners
-        list of pixels' coordinates
-    @param: h
-        hight of processed image in pixels
-    @param: w
-        width of processed image in pixels
+    Args:
+        corners: list of pixels' coordinates
+        h: hight of processed image in pixels
+        w: width of processed image in pixels
 
-    @returns
+    Returns:
         list with 4 values coordinates of determened corners
     '''
 
-    def closest_point(x0: int, y0: int):
-        '''
-        Finds closest point to the given corner
+    def closest_point(x0: int, y0: int) -> List:
+        '''Finds closest point to the given corner
 
-        @param x0:
-            x-coordinate of the given corner
-        @param y0:
-            y-coordinate of the given corner
+        Args:
+            x0: x-coordinate of the given corner
+            y0: y-coordinate of the given corner
+
+        Returns:
+            list of size 2 with coordinates of the closest point [x1, y1]
         '''
         min_distance = np.inf
         closest_point = None
@@ -107,17 +101,13 @@ def choose_corners(points: np.ndarray, h: int, w: int) -> np.ndarray:
 
 
 def detect_corners(mask: np.ndarray, pad_width: int=50) -> np.ndarray:
-    '''
-    Detects corners of the document on given segmentation mask
+    '''Detects corners of the document on given segmentation mask
 
-    @param: mask
-        binary array - segmentation mask obtained
-        after applying binarize() method
+    Args:
+        mask: binary array - segmentation mask obtained after applying binarize() method
+        pad_width: width of the applied padding    
 
-    @param: pad_width
-        width of the applied padding    
-
-    @returns
+    Returns:
         list of 4 corners coordinates
         they are arranged in special order:
             1) upper left
@@ -150,7 +140,7 @@ def detect_corners(mask: np.ndarray, pad_width: int=50) -> np.ndarray:
 
 
 def demonstration():
-    '''Demonstrates work of methods from cornerDetection.py file'''
+    '''Demonstrates work of methods from this file'''
     image = io.imread('./docs/example.jpg')
     mask = binarize(image)
     edges = get_edges(mask)

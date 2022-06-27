@@ -10,18 +10,15 @@ from matplotlib import pyplot as plt
 
 
 def crop_image(filename: str=None, new_filename: str=None, image: np.ndarray=None) -> np.ndarray:
-    '''
-    Cropes document from given image
+    '''Cropes document from given image
 
-    @param: filename
-        path to the image to crop;
-        if value is None method expects to have not None image parameter
-    @param: new_filename
-        if is not None saves cropped file in specified directory
-    @param: image
-        imgae to crop in form of np.ndarray
+    Args:
+        filename: path to the image to crop;
+            if value is None method expects to have not None image parameter
+        new_filename: if is not None saves cropped file in specified directory
+        image: imgae to crop in form of np.ndarray
     
-    @returns
+    Returns:
         cropped image in form of ndarray
     '''
     if filename is not None:
@@ -48,7 +45,7 @@ def crop_image(filename: str=None, new_filename: str=None, image: np.ndarray=Non
 
 
 def demonstration():
-    '''Demonstrates work of cropping method from imageCropper.py file'''
+    '''Demonstrates work of cropping method from this file'''
     image = io.imread('./docs/example.jpg')
     mask = binarize(image)
     corners = detect_corners(mask)

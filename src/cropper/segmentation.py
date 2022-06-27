@@ -11,8 +11,14 @@ from skimage import io
 
 
 def rgb_to_bgr(img: np.ndarray) -> np.ndarray:
-    '''
-    Converts rgb image to gray scalar
+    '''Converts rgb image to gray scalar
+
+    Args:
+        img: image read using skimage.io.imread() or
+            similar method
+    
+    Returns:
+        image converted to monochrome format
     '''
     gray = color.rgb2gray(img)
     frequencies = dct(dct(gray, axis=0), axis=1)
@@ -24,9 +30,15 @@ def rgb_to_bgr(img: np.ndarray) -> np.ndarray:
 
 
 def preprocess(img: np.ndarray) -> np.ndarray:
-    '''
-    Converts rgb image to gray scalar and applies Gauss
+    '''Converts rgb image to gray scalar and applies Gauss
     filter for bluring
+
+    Args:
+        img: image read using skimage.io.imread() or
+            similar method
+    
+    Returns:
+        blurred image converted to monochrome format
     '''
     gray = rgb_to_bgr(img)
     gray = gaussian(gray, 2)
@@ -35,15 +47,14 @@ def preprocess(img: np.ndarray) -> np.ndarray:
 
 
 def get_biggest_region(mask: np.ndarray) -> np.ndarray:
-    '''
-    Finds the biggest connected white region and lives only it.
+    '''Finds the biggest connected white region and lives only it.
     This group will be initial mask of the document
 
-    @param: mask
-        mask (binary array) obtained after binarization of original image
+    Args:
+        mask: binary array obtained after binarization of original image
 
-    @returns
-        mask without (hopefuly) without white noise from background
+    Returns:
+        mask  without white noise from background
     '''
     mask = measure.label(mask)
     mask = (mask == 1 + np.argmax([r.filled_area for r in measure.regionprops(mask)]))
@@ -52,18 +63,15 @@ def get_biggest_region(mask: np.ndarray) -> np.ndarray:
 
 
 def apply_binary_closing(mask: np.ndarray, size_1: int=10, size_2: int=5) -> np.ndarray:
-    '''
-    Two different methods for binary holes closing are used.
+    '''Two different methods for binary holes closing are used.
     They are needed to remove holes obtained by text on the receipts.
 
-    @param: mask
-        mask obtained after applying thresholding function
-    @param: size_1
-        size of the disk for binary_closing() from skimage
-    @param: size_2
-        size of the disk for binaary_fill_holes() from scipy
+    Args:
+        mask: mask obtained after applying thresholding function
+        size_1: size of the disk for binary_closing() from skimage
+        size_2: size of the disk for binaary_fill_holes() from scipy
 
-    @returns
+    Returns:
         final binarization mask
     '''
     mask = binary_closing(mask, footprint=disk(size_1, bool))
@@ -73,13 +81,12 @@ def apply_binary_closing(mask: np.ndarray, size_1: int=10, size_2: int=5) -> np.
 
 
 def post_processing(mask: np.ndarray) -> np.ndarray:
-    '''
-    Applies post processing methods after thersholding binarization
+    '''Applies post processing methods after thersholding binarization
 
-    @param: mask
-        mask obtained after thersholding function
+    Args:
+        mask: mask obtained after thersholding function
 
-    @returns
+    Returns:
         final binarization mask
     '''
     mask = get_biggest_region(mask)
@@ -89,16 +96,14 @@ def post_processing(mask: np.ndarray) -> np.ndarray:
 
 
 def otsu_binarization(gray: np.ndarray, disc_size: int=8) -> np.ndarray:
-    '''
-    Thresholding function
+    '''Thresholding function
     Applies Otsu binarization to preprocessed image
 
-    @param: gray
-        preprocess image in gray scalar with applied Gaus filter
-    @param: disc_size
-        size of the environment to check in otsu() method
+    Args:
+        gray: preprocess image in gray scalar with applied Gaus filter
+        disc_size: size of the environment to check in otsu() method
 
-    @returns
+    Returns:
         binary array (mask)
     '''
     gray = img_as_ubyte(gray)
@@ -109,16 +114,14 @@ def otsu_binarization(gray: np.ndarray, disc_size: int=8) -> np.ndarray:
 
 
 def local_binarization(gray: np.ndarray, block_size: int=101, offset: int=0) -> np.ndarray:
-    '''
-    Thresholding function
+    '''Thresholding function
     Applies Local binarization to preprocessed image
 
-    @param: gray
-        preprocess image in gray scalar with applied Gaus filter
-    @param: block_size
-        size of the environment to check in local() method
+    Args:
+        gray: preprocess image in gray scalar with applied Gaus filter
+        block_size: size of the environment to check in local() method
 
-    @returns
+    Returns:
         binary array (mask)
     '''
     local = threshold_local(gray, block_size=block_size, offset=offset)
@@ -128,14 +131,13 @@ def local_binarization(gray: np.ndarray, block_size: int=101, offset: int=0) -> 
 
 
 def minimum_binarization(gray: np.ndarray) -> np.ndarray:
-    '''
-    Thresholding function
+    '''Thresholding function
     Applies minimum binarization to preprocessed image
 
-    @param: gray
-        preprocess image in gray scalar with applied Gaus filter
+    Args:
+        gray: preprocess image in gray scalar with applied Gaus filter
 
-    @returns
+    Returns:
         binary array (mask)
     '''
     thresh_min = threshold_minimum(gray)
@@ -145,13 +147,12 @@ def minimum_binarization(gray: np.ndarray) -> np.ndarray:
 
 
 def binarize(img: np.ndarray) -> np.ndarray:
-    '''
-    Binarizes given image
+    '''Binarizes given image
 
-    @param: img
-        given rgb image
+    Args:
+        img: given rgb image
 
-    @returns
+    Returns:
         binary array (segmentation mask)
     '''    
     gray = preprocess(img)
@@ -166,7 +167,7 @@ def binarize(img: np.ndarray) -> np.ndarray:
 
 
 def demonstration():
-    '''Demonstrates work of methods from segmentation.py file'''
+    '''Demonstrates work of methods from this file'''
     image = io.imread('./docs/example.jpg')
     gray = rgb_to_bgr(image)
     gauss = preprocess(image)

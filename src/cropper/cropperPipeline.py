@@ -5,16 +5,15 @@ import numpy as np
 
 
 def crop_image_pipeline(filename: str, new_filename: str=None):
-    '''
-    Cropes document from given image and shows all the processing stages
+    '''Cropes document from given image and shows all the processing stages
 
-    @param: filename
-        path to the image to crop;
-    @param: new_filename
-        if is not None saves cropped file in specified directory;
-        else shows the result with plt.show() method
+    Args:
+        filename: path to the image to crop;
+        new_filename: if is not None saves cropped file in specified directory;
+            else shows the result with plt.show() method
     '''
     image = io.imread(filename)
+    
     gray = segmentation.rgb_to_bgr(image)
     gauss = segmentation.preprocess(image)
     otsu = segmentation.otsu_binarization(gauss)
