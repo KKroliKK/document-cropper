@@ -120,6 +120,12 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 <!-- ALGORITHM DESCRIPTION -->
 ## Algorithm Description
+
+This implementation was based on [this Inovex article](https://www.inovex.de/de/blog/digitize-receipts-computer-vision/?utm_source=yafavorites). Code from the article didn't work out of the box, so I have reworked part of the code and implemented my own corner detection algorithm.
+
+To crop document from the image 
+
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
