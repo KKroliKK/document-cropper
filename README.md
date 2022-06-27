@@ -152,8 +152,16 @@ Two different binary holes methods from skimage and scipy were used. I went thro
 There is another issue. In the original [article](https://www.inovex.de/de/blog/digitize-receipts-computer-vision/?utm_source=yafavorites) this step of binary closing was performed before extracting document region (previous step). Changing the order of applying theese methods gave significant increase in quality. If we perform binary closing before previous step we will glue background to the document.<br>
 ![](docs/readme/56.png)<br>
 
+1. **Corner detection**<br>
+Now we have segmentation mask of the document and we can find document's corners. For this perpose I extract one pixel edge from obtained mask. There is a problem with edge selection if the document goes out of the image (as in the example below). In such a case method for edges extrcation loses some of the edges so I decided to use padding with __False__ values before edge extraction. It solved the problem.<br><br>
+Now we have edge pixels. Some of them belong to sides of the mask others belong to corners. Let's consider side pixel. If we look at surrounding of such a pixel we will understand that it has about half white neighbors and half of black neighbors. If we consider corner pixels then we will get that they have much less than half of white pixels. By this way we can decide guess which pixels are more likely to belong to the corners.<br><br>
+Finally we should decide which 4 pixels will we take for corners. I go through the obtained list of pixels and select the closest one for each of the corners of the image.<br>
+![](docs/readme/678.png)<br>
+Algorithm described above is totally my idea. In other articles an repos the authors try to use Hough lines tranform. They try to find straight lines in seegmentation mask and then try to find their intrsections. Finally, the choose corners from theese intersections. I tested some varints of this approach and it did not give good results.
 
-
+1. **Сutting out**<br>
+When coordinates of corners are found we can finally cut the document from the image and rescale it to the correct form.<br>
+![](docs/readme/910.png)<br>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -163,15 +171,9 @@ There is another issue. In the original [article](https://www.inovex.de/de/blog/
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
-
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
-* [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
+* [Inovex article](https://www.inovex.de/de/blog/digitize-receipts-computer-vision/?utm_source=yafavorites)
+* [Another approach using Open CV library](https://developers.goalist.co.jp/entry/2019/02/13/150126)
+* [Nanonets article related to the theme](https://nanonets.com/blog/receipt-ocr/)
+* [Related reppository (code from it did not work for me)](https://github.com/jackfong123/ReceiptSegmentation)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
