@@ -139,11 +139,21 @@ At this step I apply thresholding as first binarization step. Usage of the thres
 ![](docs/readme/34.png)
 
 1. **Document selection**<br>
+This is the most important step of the algorithm. Mistakes on this step cause the whole cropping process to fail.<br>
 After Otsu thresholding we get picture with different white zones. One of such zones is our document. At this step I am trying leave only document white zone. There is method in [skimage](https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.label) which can cluster pixels from disjoit white zones. The biggest cluster is our document so I leave only it and remove all other regions.<br>
 ![](docs/readme/45.png)<br>
 This part of the algorithm should be improved. There are two cases when extracting works incorrect. The first one is when some of background white regions is connected to the documnet's region. The second one is when some of the background regions is bigger than document. There are examples for theese problems below:<br>
 ![](docs/readme/problem1.png) <br> ![](docs/readme/problem2.png) <br>
 These issues should be handled somehow in the future.
+
+1. **Fill holes**<br>
+At this step we remove holes left by text.<br>
+Two different binary holes methods from skimage and scipy were used. I went through different values of the hyperparameters and found the best ones. Also I tested the order of the application of these methods.<br><br>
+There is another issue. In the original [article](https://www.inovex.de/de/blog/digitize-receipts-computer-vision/?utm_source=yafavorites) this step of binary closing was performed before extracting document region (previous step). Changing the order of applying theese methods gave significant increase in quality. If we perform binary closing before previous step we will glue background to the document.<br>
+![](docs/readme/56.png)<br>
+
+
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
