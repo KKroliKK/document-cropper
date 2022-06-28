@@ -1,10 +1,10 @@
-from cropper import segmentation, cornerDetection, imageCropper
+from cropper import corner_detection, image_cropper, segmentation
 from matplotlib import pyplot as plt
 from skimage import io
 import numpy as np
 
 
-def crop_image_pipeline(filename: str, new_filename: str=None, image: np.ndarray=None):
+def crop_image_pipeline(filename: str=None, new_filename: str=None, image: np.ndarray=None):
     '''Cropes document from given image and shows all the processing stages
 
     Args:
@@ -25,10 +25,10 @@ def crop_image_pipeline(filename: str, new_filename: str=None, image: np.ndarray
 
     p_mask = np.pad(mask, pad_width=50, constant_values=False)
 
-    edges = cornerDetection.get_edges(p_mask, edge_width=6)
-    corners = cornerDetection.detect_corners(mask)
+    edges = corner_detection.get_edges(p_mask, edge_width=6)
+    corners = corner_detection.detect_corners(mask)
 
-    cropped = imageCropper.crop_image(image=image)
+    cropped = image_cropper.crop_image(image=image)
 
     fig, axes = plt.subplots(2, 5, figsize=(20, 10))
     fig.canvas.manager.set_window_title('Whole Pipeline')

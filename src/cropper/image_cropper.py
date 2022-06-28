@@ -1,7 +1,7 @@
 from skimage.transform import ProjectiveTransform, warp
 from scipy.spatial import distance
 from skimage.util import img_as_ubyte
-from cropper.cornerDetection import detect_corners
+from cropper.corner_detection import detect_corners
 from cropper.segmentation import binarize
 from skimage import io
 import numpy as np
