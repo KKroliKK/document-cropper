@@ -4,16 +4,19 @@ from skimage import io
 import numpy as np
 
 
-def crop_image_pipeline(filename: str, new_filename: str=None):
+def crop_image_pipeline(filename: str, new_filename: str=None, image: np.ndarray=None):
     '''Cropes document from given image and shows all the processing stages
 
     Args:
-        filename: path to the image to crop;
-        new_filename: if is not None saves cropped file in specified directory;
+        filename: path to the image to crop
+            if value is None method expects to have not None image parameter
+        new_filename: if is not None saves cropped file in specified directory
             else shows the result with plt.show() method
+        image: image to crop in form of np.ndarray
     '''
-    image = io.imread(filename)
-    
+    if filename is not None:
+        image = io.imread(filename)
+
     gray = segmentation.rgb_to_bgr(image)
     gauss = segmentation.preprocess(image)
     otsu = segmentation.otsu_binarization(gauss)

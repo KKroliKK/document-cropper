@@ -3,23 +3,23 @@ from scipy.spatial import distance
 from skimage.util import img_as_ubyte
 from cropper.cornerDetection import detect_corners
 from cropper.segmentation import binarize
+from skimage import io
 import numpy as np
 
-from skimage import io
 from matplotlib import pyplot as plt
 
 
 def crop_image(filename: str=None, new_filename: str=None, image: np.ndarray=None) -> np.ndarray:
-    '''Cropes document from given image
+    '''Cropes document from given image and saves the result in specified directory
 
     Args:
         filename: path to the image to crop;
             if value is None method expects to have not None image parameter
         new_filename: if is not None saves cropped file in specified directory
-        image: imgae to crop in form of np.ndarray
+        image: image to crop in form of np.ndarray
     
     Returns:
-        cropped image in form of ndarray
+        cropped image as np.ndarray
     '''
     if filename is not None:
         image = io.imread(filename)
@@ -39,6 +39,7 @@ def crop_image(filename: str=None, new_filename: str=None, image: np.ndarray=Non
 
     if new_filename is not None:
         io.imsave(new_filename, cropped)
+
     return cropped
 
 
