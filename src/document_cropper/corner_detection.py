@@ -1,6 +1,6 @@
 from typing import List
 from skimage.morphology import disk, binary_erosion
-from cropper.segmentation import binarize
+from document_cropper.segmentation import binarize
 import numpy as np
 import math
 

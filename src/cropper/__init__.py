@@ -1,2 +1,0 @@
-from cropper.image_cropper import crop_image
-from cropper.cropper_pipeline import crop_image_pipeline

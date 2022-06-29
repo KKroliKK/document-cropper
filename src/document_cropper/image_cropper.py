@@ -1,8 +1,8 @@
 from skimage.transform import ProjectiveTransform, warp
 from scipy.spatial import distance
 from skimage.util import img_as_ubyte
-from cropper.corner_detection import detect_corners
-from cropper.segmentation import binarize
+from document_cropper.corner_detection import detect_corners
+from document_cropper.segmentation import binarize
 from skimage import io
 import numpy as np
 
@@ -13,7 +13,7 @@ def crop_image(filename: str=None, new_filename: str=None, image: np.ndarray=Non
     '''Cropes document from given image and saves the result in specified directory
 
     Args:
-        filename: path to the image to crop;
+        filename: path to the image to crop (.jpg or .png)
             if value is None method expects to have not None image parameter
         new_filename: if is not None saves cropped file in specified directory
         image: image to crop in form of np.ndarray

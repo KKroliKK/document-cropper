@@ -29,11 +29,7 @@
       </ul>
     </li>
     <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
+      <a href="#installation">Getting Started</a>
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#algorithm-description">Algorithm Description</a></li>
@@ -53,7 +49,6 @@ There are a several articles and GitHub repos dedicated to document segmentation
 
 The description below explains the whole circumcision process. Maybe you will make up an idea of how to make it work better.
 
-Use methods from `/src/main.py` to get started.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -71,37 +66,14 @@ Use methods from `/src/main.py` to get started.
 
 
 
-<!-- GETTING STARTED -->
-## Getting Started
+<!-- Installation -->
+## Installation
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+This package can be easily installed via pip
 
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
   ```sh
-  npm install npm@latest -g
+  pip install document-cropper
   ```
-
-### Installation
-
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/your_username_/Project-Name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -110,9 +82,45 @@ _Below is an example of how you can instruct your audience on installing and set
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+```Python
+import document_cropper as dc
+```
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+To crop image you should use:
+```Python
+dc.crop_image("path_to_image.jpg", "name_for_the_result.jpg")
+```
+
+ If you want to continue processing the photo and save the cropping result to a variable:
+ ```Python
+cropped = dc.crop_image("path_to_image.jpg")
+```
+
+Also you can provide input as np.ndarray
+```Python
+from skimage import io
+
+cropped = dc.crop_image(image=image)
+```
+
+If you want to see all stages of processing you can use:
+```Python
+# Save the stages as image
+dc.crop_image_pipeline("path_to_image.jpg", "name_for_the_result.jpg")
+
+# Show the stages as matplotlib figure
+dc.crop_image_pipeline("path_to_image.jpg")
+```
+
+
+_**main.py** file contains examples of using these methods<br><br>
+There are also **demostration()** methods in this repository which can be uncommented in **main.py**. They show how the code from the files works in order to make it easier to figure out what the methods are doing. This **demonstration()** methods present only in this repository and do not come with the package when installed via pip_
+```Python
+# segmentation.demonstration()
+# corner_detection.demonstration()
+# image_cropper.demonstration()
+# cropper_pipeline.demonstration()
+```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
